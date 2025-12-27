@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="PokeDesktopViewer.Benchmark/PokeDesktopViewer.Benchmark.csproj" Id="6fef5e63-e3cd-4628-be87-f71b8bbf626e" />
+  <Project Path="PokeDesktopViewer.Core/PokeDesktopViewer.Core.csproj" Id="7f1be118-0a08-4220-993a-5a480e54fa0f" />
+  <Project Path="PokeDesktopViewer.WPF/PokeDesktopViewer.WPF.csproj" />
+</Solution>
