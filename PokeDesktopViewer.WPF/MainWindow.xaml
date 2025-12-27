@@ -6,8 +6,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:PokeDesktopViewer.WPF.ViewModels"
         Title="MainWindow"
-        Width="800"
-        Height="450"
+        Width="1000"
+        Height="1900"
         d:DataContext="{d:DesignInstance Type=vm:MainViewModel,
                                          IsDesignTimeCreatable=True}"
         mc:Ignorable="d">

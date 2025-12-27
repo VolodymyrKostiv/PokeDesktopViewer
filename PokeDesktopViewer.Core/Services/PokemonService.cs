@@ -1,49 +1,39 @@
 ﻿using PokeApiNet;
 using PokeDesktopViewer.Core.Entities;
-using System.Collections.ObjectModel;
 
 namespace PokeDesktopViewer.Core.Services;
 
 public class PokemonService
 {
     private readonly PokeApiClient _pokeApiClient;
+    private readonly SemaphoreSlim _semaphoreSlim = new(8);
 
     public PokemonService()
     {
         _pokeApiClient = new PokeApiClient();
     }
 
-    public async Task<ObservableCollection<PokemonDto>> GetPokemons(int count)
+    public async IAsyncEnumerable<List<PokemonDto>> GetPokemons(int count)
     {
-        var pokemons = new ObservableCollection<PokemonDto>();
         const int chunkSize = 25;
 
         var pokemonsPage = await _pokeApiClient.GetNamedResourcePageAsync<Pokemon>(count, 0);
+        int pokemonsPageCount = pokemonsPage.Results.Count;
 
-        for (int i = 0; i < count; i += chunkSize)
+        for (int i = 0; i < pokemonsPageCount; i += chunkSize)
         {
             var chunk = pokemonsPage.Results.Skip(i).Take(chunkSize);
             var batchResult = await GetChunkOfPokemons(chunk);
 
-            if (batchResult != null && batchResult.Length > 0)
-            {
-                foreach (var item in batchResult)
-                {
-                    pokemons.Add(item);
-                }
-            }
+            yield return batchResult;
         }
-
-        return pokemons;
     }
 
-    private async Task<PokemonDto[]?> GetChunkOfPokemons(IEnumerable<NamedApiResource<Pokemon>> chunk)
+    private async Task<List<PokemonDto>> GetChunkOfPokemons(IEnumerable<NamedApiResource<Pokemon>> chunk)
     {
-        var semaphoreSlim = new SemaphoreSlim(8);
-
         var tasks = chunk.Select(async p =>
         {
-            await semaphoreSlim.WaitAsync();
+            await _semaphoreSlim.WaitAsync();
 
             try
             {
@@ -56,12 +46,12 @@ public class PokemonService
             }
             finally
             {
-                semaphoreSlim.Release();
+                _semaphoreSlim.Release();
             }
         });
 
         var results = await Task.WhenAll(tasks);
 
-        return results;
+        return [.. results];
     }
 }
