@@ -6,7 +6,7 @@ namespace PokeDesktopViewer.Core.Services;
 public class PokemonService
 {
     private readonly PokeApiClient _pokeApiClient;
-    private readonly SemaphoreSlim _semaphoreSlim = new(8);
+    private readonly SemaphoreSlim _semaphoreSlim = new(4);
 
     public PokemonService()
     {

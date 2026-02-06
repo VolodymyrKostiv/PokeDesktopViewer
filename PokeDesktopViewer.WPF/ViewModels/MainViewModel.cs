@@ -18,7 +18,7 @@ public partial class MainViewModel : BaseViewModel
     public async Task InitializePokemonCards()
     {
         var pokemonService = new PokemonService();
-        await foreach (var batch in pokemonService.GetPokemons(150))
+        await foreach (var batch in pokemonService.GetPokemons(100))
         {
             await App.Current.Dispatcher.InvokeAsync(() =>
             {

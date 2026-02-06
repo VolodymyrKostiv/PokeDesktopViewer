@@ -6,45 +6,95 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:PokeDesktopViewer.WPF.ViewModels"
         Title="MainWindow"
-        Width="1000"
-        Height="1900"
         d:DataContext="{d:DesignInstance Type=vm:MainViewModel,
                                          IsDesignTimeCreatable=True}"
+        WindowState="Maximized"
         mc:Ignorable="d">
+    <Window.Resources>
+        <DataTemplate x:Key="PokemonTemplate">
+            <StackPanel>
+                <Image Width="50"
+                       Height="50"
+                       Source="{Binding Sprite}" />
+                <TextBlock Text="{Binding Name}" />
+            </StackPanel>
+        </DataTemplate>
+    </Window.Resources>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-
         <TabControl>
+            <TabItem>
+                <TabItem.Header>
+                    <Label Content="Empty" />
+                </TabItem.Header>
+            </TabItem>
             <TabItem>
                 <TabItem.Header>
                     <Label Content="Wrap Panel" />
                 </TabItem.Header>
-                <ItemsControl ItemsSource="{Binding Pokemons}"
-                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                              ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                              VirtualizingPanel.IsVirtualizing="True"
-                              VirtualizingPanel.VirtualizationMode="Recycling">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel>
-                                <Image Width="50"
-                                       Height="50"
-                                       Source="{Binding Sprite}" />
-                                <Label Content="{Binding Name}" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                    <ItemsControl.ItemsPanel>
+                <ScrollViewer>
+                    <ItemsControl ItemTemplate="{StaticResource PokemonTemplate}"
+                                  ItemsSource="{Binding Pokemons}"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                  ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                  VirtualizingPanel.IsVirtualizing="True"
+                                  VirtualizingPanel.VirtualizationMode="Recycling">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem>
+                <TabItem.Header>
+                    <Label Content="DataGrid" />
+                </TabItem.Header>
+                <DataGrid AutoGenerateColumns="False"
+                          EnableColumnVirtualization="True"
+                          EnableRowVirtualization="True"
+                          ItemsSource="{Binding Pokemons}"
+                          VirtualizingPanel.IsVirtualizing="True"
+                          VirtualizingPanel.VirtualizationMode="Recycling">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn CellTemplate="{StaticResource PokemonTemplate}" Header="Pokemon" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+            <TabItem>
+                <TabItem.Header>
+                    <Label Content="ListView" />
+                </TabItem.Header>
+                <ListView ItemTemplate="{StaticResource PokemonTemplate}"
+                          ItemsSource="{Binding Pokemons}"
+                          ScrollViewer.CanContentScroll="True"
+                          VirtualizingPanel.IsVirtualizing="True"
+                          VirtualizingPanel.VirtualizationMode="Recycling">
+                    <ListView.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <WrapPanel />
+                            <VirtualizingStackPanel />
                         </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                </ItemsControl>
+                    </ListView.ItemsPanel>
+                </ListView>
+            </TabItem>
+            <TabItem>
+                <TabItem.Header>
+                    <Label Content="UniformGrid" />
+                </TabItem.Header>
+                <ScrollViewer>
+                    <ItemsControl ItemTemplate="{StaticResource PokemonTemplate}"
+                                  ItemsSource="{Binding Pokemons}"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                                  ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                  VirtualizingPanel.IsVirtualizing="True"
+                                  VirtualizingPanel.VirtualizationMode="Recycling">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="20" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </ScrollViewer>
             </TabItem>
         </TabControl>
     </Grid>
